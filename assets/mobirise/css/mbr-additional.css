@@ -918,6 +918,7 @@ a {
 }
 .cid-sFCw1qGFAI .navbar.navbar-short {
   min-height: 60px;
+  border-bottom: 1px solid #e0e0e0;
 }
 .cid-sFCw1qGFAI .navbar.navbar-short .navbar-logo img {
   height: 2.5rem !important;
