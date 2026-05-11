@@ -905,7 +905,7 @@ a {
     flex-shrink: initial;
     flex-basis: auto;
     word-break: break-word;
-    padding-right: 2rem;
+    padding-right: 0;
   }
   .cid-sFCw1qGFAI .navbar .navbar-toggler {
     flex-basis: auto;
