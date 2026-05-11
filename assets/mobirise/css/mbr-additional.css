@@ -1544,8 +1544,7 @@ a {
 @media (max-width: 991px) {
 
     .lang-switcher-mobile {
-        margin-left: auto;
-        margin-right: 10px;
+        margin-left: 10px;
     }
 
     .lang-switcher-mobile .btn {
