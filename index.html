@@ -507,6 +507,26 @@
             </div>
         </div>
     </div>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-12 col-lg-8">
+                <div class="card-wrapper p-4" style="border:1px solid #e5e5e5;border-radius:12px;">
+                    <h4 class="mbr-section-title mbr-fonts-style mb-4 display-5"><strong>Оставить заявку</strong></h4>
+                    <form id="alpLeadForm" action="https://script.google.com/macros/s/AKfycbzzYn8W--Gq8XHBU34qkqpwXkC-wiMjjOiOrjeypg4MAja6Gremxxmn7NlRG1Mq5dif/exec" method="post" target="alpLeadFrame">
+                        <div class="mb-3"><label class="form-label" for="alpLeadName">Ваше имя</label><input class="form-control" id="alpLeadName" name="name" type="text" maxlength="200" autocomplete="name" required></div>
+                        <div class="mb-3"><label class="form-label" for="alpLeadPhone">Телефон</label><input class="form-control" id="alpLeadPhone" name="phone" type="tel" maxlength="50" autocomplete="tel" required></div>
+                        <div class="mb-3"><label class="form-label" for="alpLeadComment">Комментарий</label><textarea class="form-control" id="alpLeadComment" name="comment" rows="3" maxlength="2000"></textarea></div>
+                        <div aria-hidden="true" style="position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden;"><label for="alpLeadWebsite">Leave this field empty</label><input id="alpLeadWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+                        <input type="hidden" name="page_url"><input type="hidden" name="utm_source"><input type="hidden" name="utm_medium"><input type="hidden" name="utm_campaign"><input type="hidden" name="utm_content"><input type="hidden" name="utm_term"><input type="hidden" name="referrer"><input type="hidden" name="yclid"><input type="hidden" name="gclid"><input type="hidden" name="language" value="RU">
+                        <button class="btn btn-danger display-4" id="alpLeadSubmit" type="submit">Отправить заявку</button>
+                        <p id="alpLeadStatus" class="mbr-text mbr-fonts-style mt-3" role="status" aria-live="polite"></p>
+                        <a id="alpLeadWhatsApp" class="btn btn-success display-4 mt-2" href="#" target="_blank" rel="noopener" hidden>Продолжить в WhatsApp</a>
+                    </form>
+                    <iframe name="alpLeadFrame" id="alpLeadFrame" title="Form submission" style="display:none;width:0;height:0;border:0;"></iframe>
+                </div>
+            </div>
+        </div>
+
 </section>
 
 <section data-bs-version="5.1" class="map2 cid-sFAxp7Y5iM" id="map2-1y">
@@ -565,5 +585,56 @@
 </section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: none;position: relative;height: 4rem;"><a href="https://mobiri.se/14455" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com/html-builder.html">HTML Website Creator</a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
+
+<script>
+(function () {
+  const form = document.getElementById('alpLeadForm');
+  const frame = document.getElementById('alpLeadFrame');
+  if (!form || !frame) return;
+  const language = 'RU';
+  const texts = {"title": "Оставить заявку", "name": "Ваше имя", "phone": "Телефон", "comment": "Комментарий", "submit": "Отправить заявку", "sending": "Отправляем заявку…", "saved": "Заявка отправлена в обработку. Чтобы дополнительно связаться с нами, нажмите кнопку WhatsApp.", "wa": "Продолжить в WhatsApp", "wa_title": "Новая заявка с сайта ALP GROUP", "name_label": "Имя", "phone_label": "Телефон", "comment_label": "Комментарий", "source_label": "Источник", "campaign_label": "Кампания", "page_label": "Страница"};
+  const storageKey = 'alpgroup_first_touch_v1';
+  const params = new URLSearchParams(window.location.search);
+  const keys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','yclid','gclid'];
+  const currentTouch = {};
+  keys.forEach(key => currentTouch[key] = params.get(key) || '');
+  const hasCampaignParams = keys.some(key => Boolean(currentTouch[key]));
+  let firstTouch = null;
+  try { firstTouch = JSON.parse(localStorage.getItem(storageKey) || 'null'); } catch (e) {}
+  const expired = !firstTouch || !firstTouch.savedAt || Date.now() - firstTouch.savedAt > 90*24*60*60*1000;
+  if (hasCampaignParams && expired) {
+    firstTouch = Object.assign({}, currentTouch, {savedAt:Date.now()});
+    try { localStorage.setItem(storageKey, JSON.stringify(firstTouch)); } catch (e) {}
+  }
+  if (!firstTouch) firstTouch = Object.assign({}, currentTouch);
+  function setField(name,value) { const field=form.elements.namedItem(name); if(field) field.value=value||''; }
+  let submitted=false, startedAt=0;
+  frame.addEventListener('load', function () {
+    if (!submitted || Date.now()-startedAt<500) return;
+    submitted=false;
+    document.getElementById('alpLeadSubmit').disabled=false;
+    document.getElementById('alpLeadStatus').textContent=texts.saved;
+    const name=form.elements.namedItem('name').value.trim();
+    const phone=form.elements.namedItem('phone').value.trim();
+    const comment=form.elements.namedItem('comment').value.trim();
+    const message=[texts.wa_title,texts.name_label+': '+name,texts.phone_label+': '+phone,comment?texts.comment_label+': '+comment:'',firstTouch.utm_source?texts.source_label+': '+firstTouch.utm_source:'',firstTouch.utm_campaign?texts.campaign_label+': '+firstTouch.utm_campaign:'',texts.page_label+': '+window.location.href].filter(Boolean).join('\n');
+    const wa=document.getElementById('alpLeadWhatsApp');
+    wa.href='https://wa.me/995591069140?text='+encodeURIComponent(message);
+    wa.hidden=false;
+    form.reset();
+  });
+  form.addEventListener('submit', function (event) {
+    if (!form.reportValidity()) { event.preventDefault(); return; }
+    if (form.elements.namedItem('website').value) { event.preventDefault(); return; }
+    setField('page_url',window.location.href); setField('referrer',document.referrer);
+    keys.forEach(key=>setField(key,firstTouch[key]||'')); setField('language',language);
+    submitted=true; startedAt=Date.now();
+    document.getElementById('alpLeadSubmit').disabled=true;
+    document.getElementById('alpLeadStatus').textContent=texts.sending;
+    document.getElementById('alpLeadWhatsApp').hidden=true;
+  });
+})();
+</script>
+
 </body>
 </html>
